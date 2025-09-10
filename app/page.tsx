@@ -97,11 +97,19 @@ pillars.forEach((p) => {
   // total is sum of four pillars (0-100)
   const totalScore = useMemo(() => Math.round(Object.values(pillarScores).reduce((s, v) => s + v, 0) * 100) / 100, [pillarScores]);
 
-  function computeLowestPillars() {
-    const list = Object.keys(pillarScores).map((k) => ({ key: k, score: pillarScores[k], label: pillars.find((p) => p.key === k).label }));
-    list.sort((a, b) => a.score - b.score);
-    return list;
-  }
+function computeLowestPillars() {
+  const list = Object.keys(pillarScores).map((k) => {
+    const pillarDef = pillars.find((p) => p.key === k);
+    return { 
+      key: k, 
+      score: pillarScores[k], 
+      label: pillarDef?.label || k // fallback to key if undefined
+    };
+  });
+  
+  list.sort((a, b) => a.score - b.score);
+  return list;
+}
 
   function handleFinishAssessment() {
     const sorted = computeLowestPillars();
