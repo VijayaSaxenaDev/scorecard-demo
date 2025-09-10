@@ -196,20 +196,31 @@ export default function ScorecardDemo() {
     }
   }
 async function saveResponses() {
-  const payload = {
-    name,
-    company,
-    answers,
-    pillarScores,
-    totalScore,
-    date: new Date().toISOString(),
-  };
+  try {
+    const payload = {
+      name,
+      company,
+      answers,
+      pillarScores,
+      totalScore,
+      date: new Date().toISOString(),
+    };
 
-  // Log the payload to Vercel logs
-  console.log("Scorecard Response:", JSON.stringify(payload));
+    const res = await fetch("/api/saveResponses", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-  // Optional: simulate an API call
-  return { status: "logged" };
+    const json = await res.json();
+    if (json.status === "ok") {
+      console.log("Response saved successfully!");
+    } else {
+      console.error("Failed to save response:", json.message);
+    }
+  } catch (err) {
+    console.error("Error saving response:", err);
+  }
 }
 
 

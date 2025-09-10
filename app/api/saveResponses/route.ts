@@ -1,29 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { NextResponse } from "next/server";
 
-const filePath = path.join(process.cwd(), 'responses.json');
-
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const data = await req.json();
 
-    // Read existing responses
-    let responses = [];
-    if (fs.existsSync(filePath)) {
-      const fileData = fs.readFileSync(filePath, 'utf-8');
-      responses = JSON.parse(fileData);
+    // Log the response to Vercel logs
+    console.log("Scorecard Response:", JSON.stringify(data));
+
+    return NextResponse.json({ status: "ok" });
+  } catch (error: unknown) {
+    let message = "Unknown error";
+    if (error instanceof Error) {
+      message = error.message;
     }
-
-    // Append new data
-    responses.push(data);
-
-    // Save back to file
-    fs.writeFileSync(filePath, JSON.stringify(responses, null, 2));
-
-    return NextResponse.json({ status: 'success' });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ status: 'error', message: error.message }, { status: 500 });
+    console.error(message);
+    return NextResponse.json({ status: "error", message }, { status: 500 });
   }
 }
