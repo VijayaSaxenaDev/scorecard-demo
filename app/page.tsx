@@ -74,9 +74,12 @@ pillars.forEach((p) => {
   const [clarifierOptions, setClarifierOptions] = useState([]);
   const [outcome, setOutcome] = useState(null);
 
-  function setAnswer(pillarKey, idx, value) {
-    setAnswers((prev) => ({ ...prev, [pillarKey]: prev[pillarKey].map((v, i) => (i === idx ? value : v)) }));
-  }
+ function setAnswer(pillarKey: string, idx: number, value: number) {
+  setAnswers((prev) => ({
+    ...prev,
+    [pillarKey]: prev[pillarKey].map((v, i) => (i === idx ? value : v)),
+  }));
+}
 
   // === FIXED SCALING ===
   // average (0-10) -> scale to 0-25 by multiplying by 2.5
