@@ -117,17 +117,30 @@ function computeLowestPillars() {
     const close = sorted.filter((s) => s.score - lowest.score <= 3);
 
     if (close.length === 1) {
-      const pillarDef = pillars.find((p) => p.key === lowest.key);
-      setClarifierOptions(pillarDef.clarifiers);
-      setOutcome({ step: "clarifier", type: "single", pillar: pillarDef.key, label: pillarDef.label });
-    } else if (close.length > 1 && close.length <= 3) {
-      setClarifierOptions(close.map((c) => pillars.find((p) => p.key === c.key).label));
-      setOutcome({ step: "clarifier", type: "tie", keys: close.map((c) => c.key), labels: close.map((c) => pillars.find((p) => p.key === c.key).label) });
-    } else {
-      const p = pillars.find((p) => p.key === "health");
-      setClarifierOptions(p.clarifiers);
-      setOutcome({ step: "clarifier", type: "single", pillar: "health", label: p.label });
-    }
+  const pillarDef = pillars.find((p) => p.key === lowest.key);
+  if (!pillarDef) throw new Error(`Pillar not found for key: ${lowest.key}`);
+  setClarifierOptions(pillarDef.clarifiers);
+  setOutcome({ step: "clarifier", type: "single", pillar: pillarDef.key, label: pillarDef.label });
+} else if (close.length > 1 && close.length <= 3) {
+  const labels = close.map((c) => {
+    const pd = pillars.find((p) => p.key === c.key);
+    return pd?.label || c.key; // fallback if undefined
+  });
+  setClarifierOptions(labels);
+  setOutcome({
+    step: "clarifier",
+    type: "tie",
+    keys: close.map(c => c.key),
+    labels
+  });
+} else {
+  const pillarDef = pillars.find((p) => p.key === "health");
+  if (!pillarDef) throw new Error("Health pillar not found");
+  setClarifierOptions(pillarDef.clarifiers);
+  setOutcome({ step: "clarifier", type: "single", pillar: "health", label: pillarDef.label });
+}
+
+
   }
 
   function handleClarifierPick(choiceIndex) {
