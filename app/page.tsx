@@ -64,10 +64,10 @@ export default function ScorecardDemo() {
   const [company, setCompany] = useState("");
   const [currentPillarIndex, setCurrentPillarIndex] = useState(null);
   const [answers, setAnswers] = useState(() => {
-    const obj = {};
-    pillars.forEach((p) => {
-      obj[p.key] = new Array(p.questions.length).fill(5);
-    });
+  const obj: Record<string, number[]> = {};
+pillars.forEach((p) => {
+  obj[p.key] = new Array(p.questions.length).fill(5);
+});
     return obj;
   });
 
