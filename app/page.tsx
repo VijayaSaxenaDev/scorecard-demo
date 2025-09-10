@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Image from "next/image";
 
 interface Pillar {
   key: string;
@@ -194,6 +195,23 @@ export default function ScorecardDemo() {
       });
     }
   }
+async function saveResponses() {
+  const payload = {
+    name,
+    company,
+    answers,
+    pillarScores,
+    totalScore,
+    date: new Date().toISOString(),
+  };
+
+  // Log the payload to Vercel logs
+  console.log("Scorecard Response:", JSON.stringify(payload));
+
+  // Optional: simulate an API call
+  return { status: "logged" };
+}
+
 
   function handleClarifierPick(choiceIndex: number) {
     if (!outcome) return;
@@ -221,17 +239,25 @@ export default function ScorecardDemo() {
       chosen: chosenLabel,
       text: `Your PE Score is ${Math.round(totalScore)}. Your lowest area is ${outcome.label}, specifically ${chosenLabel}. We’re going to send you some resources that will help.`,
     });
+	 saveResponses();
   }
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">
         Performance & Energy Scorecard — Demo
       </h1>
 
       {/* Intro */}
       {currentPillarIndex === null && !outcome && (
-        <div className="space-y-4 bg-white p-6 rounded-2xl shadow">
+         <div className="space-y-4 bg-white p-6 rounded-2xl shadow">
+    <Image 
+      src="/scorecard-banner.png" // path to your image in public folder
+      alt="Performance & Energy"
+      width={400} 
+      height={150} 
+      className="mx-auto mb-4 rounded-lg"
+    />
           <label className="block">Your name</label>
           <input
             value={name}
@@ -296,6 +322,7 @@ export default function ScorecardDemo() {
             <div className="flex justify-between mt-4">
               <button
                 disabled={currentPillarIndex === 0}
+				hidden={currentPillarIndex === 0}
                 onClick={() => setCurrentPillarIndex(currentPillarIndex - 1)}
                 className="px-4 py-2 border rounded"
               >
@@ -315,7 +342,7 @@ export default function ScorecardDemo() {
                   onClick={handleFinishAssessment}
                   className="px-4 py-2 bg-emerald-600 text-white rounded"
                 >
-                  See Clarifier
+                  Next
                 </button>
               )}
             </div>
