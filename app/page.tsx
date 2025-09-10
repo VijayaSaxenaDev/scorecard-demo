@@ -84,15 +84,15 @@ pillars.forEach((p) => {
   // === FIXED SCALING ===
   // average (0-10) -> scale to 0-25 by multiplying by 2.5
   const pillarScores = useMemo(() => {
-    const scores = {};
-    pillars.forEach((p) => {
-      const arr = answers[p.key] || [];
-      const avg = arr.reduce((s, v) => s + Number(v || 0), 0) / p.questions.length;
-      // correct scaling: avg (0-10) * 2.5 => 0-25
-      scores[p.key] = Math.round(avg * 2.5 * 100) / 100;
-    });
-    return scores;
-  }, [answers, pillars]);
+  const scores: Record<string, number> = {}; // <--- add type here
+  pillars.forEach((p) => {
+    const arr = answers[p.key] || [];
+    const avg = arr.reduce((s, v) => s + Number(v || 0), 0) / p.questions.length;
+    // correct scaling: avg (0-10) * 2.5 => 0-25
+    scores[p.key] = Math.round(avg * 2.5 * 100) / 100;
+  });
+  return scores;
+}, [answers, pillars]);
 
   // total is sum of four pillars (0-100)
   const totalScore = useMemo(() => Math.round(Object.values(pillarScores).reduce((s, v) => s + v, 0) * 100) / 100, [pillarScores]);
